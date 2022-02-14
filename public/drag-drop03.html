@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drag and drop</title>
+    <style>
+        .box {
+            width: 600px;
+            height: 300px;
+            border: 1px solid gray;
+            background-color: aliceblue;
+        }
+
+        .ball {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+
+            background-color: cadetblue;
+            border: 1px solid lightslategrey;
+
+            display: inline-block;
+            text-align: center;
+            line-height: 50px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="ball" draggable="true" id="b1">1</div>
+        <div class="ball" draggable="true" id="b2">2</div>
+        <div class="ball" draggable="true" id="b3">3</div>
+    </div>
+    <div class="box"></div>
+    <script src="./javascripts/jquery-3.6.0.js"></script>
+    <script>
+
+        const box = $('.box');
+        const ball = $('.ball');
+
+        let dragTarget = null;
+
+        const listner = function (event) {
+            console.log(event.type, event.target);
+        };
+        // 用變數儲存被拖曳的ball
+        box.on('dragstart', function (event) {
+            dragTarget = $(event.target)
+        })
+        // dragover 的處理器內要呼叫 preventDefault()，才能觸發 drop 事件。
+        box.on('dragover', function (event) {
+            event.preventDefault();
+        })
+        box.on('drop', function (event) {
+            const t = $(event.target);
+            // 為了避免在ball中drop，因此要判斷claa = box再讓ball drop
+            if (t.hasClass('box')) {
+                // 將被拖曳的物件丟進box中
+                t.append(dragTarget)
+            }
+        })
+
+    </script>
+</body>
+
+</html>
