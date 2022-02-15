@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drag and drop</title>
+    <style>
+        .box {
+            position: absolute;
+            width: 600px;
+            height: 400px;
+            border: 1px solid gray;
+            background-color: aliceblue;
+        }
+
+        .ball {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+
+            background-color: cadetblue;
+            border: 1px solid lightslategrey;
+
+            text-align: center;
+            line-height: 50px;
+            color: white;
+
+            left: 10px;
+            top: 50px;
+            /* 讓文字不要被選取 */
+            user-select: none;
+            cursor: pointer;
+            /* pointer-events: none; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="ball">1</div>
+        <div class="ball" style="left:75px;">2</div>
+        <div class="ball" style="left:140px;">3</div>
+    </div>
+
+    <script src="./javascripts/jquery-3.6.0.js"></script>
+    <script>
+
+        const box = $('.box');
+        // 拖拉的對象: target, X座標, Y座標
+        let dragTarget = {
+            t: null,
+            dx: 0,
+            dy: 0
+        };
+
+        // 如果被mouse down的對象是ball，就存到dragTarget裡面
+        const MDown = function (event) {
+            const t = $(event.target);
+            console.log('t:', t);
+            // 設定拖拉對象: target, X座標, Y座標
+            if (t.hasClass('ball')) {
+                dragTarget.t = t;
+                dragTarget.dx = event.offsetX;
+                dragTarget.dy = event.offsetY;
+                console.log(dragTarget);
+
+                // 用append讓被拖拉者永遠是最上層
+                box.append(t)
+                // 觸發mouse move
+                box.on('mousemove', MMove);
+            }
+        }
+
+        // mouse up的時候，解除mouse move的監聽器
+        const MUp = function (event) {
+            dragTarget.t = null
+            box.off('mousemove', MMove);
+        }
+        // mouse move 的監聽器
+        const MMove = function (event) {
+            // 如果 dragTarget是空值，就跳出
+            if (!dragTarget.t) return;
+
+            // 如果不是，就設定座標
+            dragTarget.t.css({
+                left: (event.pageX - dragTarget.dx) + 'px',
+                top: (event.pageY - dragTarget.dy) + 'px',
+            })
+        };
+
+        box.on('mousedown', MDown);
+        $(window).on('mouseup', MUp);
+
+
+    </script>
+</body>
+
+</html>
